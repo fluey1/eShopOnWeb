@@ -19,7 +19,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add service defaults & Aspire components.
 builder.AddAspireServiceDefaults();
 
-builder.Services.AddFastEndpoints();
+builder.Services.AddFastEndpoints(options =>
+{
+    // Scan only this assembly: the test host loads BlazorInputFile, whose types fail to load on 64-bit .NET
+    options.DisableAutoDiscovery = true;
+    options.Assemblies = [typeof(Program).Assembly];
+});
 
 // Use to force loading of appsettings.json of test project
 builder.Configuration.AddConfigurationFile("appsettings.test.json");
